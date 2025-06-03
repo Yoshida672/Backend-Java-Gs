@@ -55,8 +55,7 @@ public class UsuarioService {
     @CacheEvict(value = "usuarios", key = "#id")
     public void deleteUsuario(UUID id) {
         usuarioRepository.deleteById(id);
-        limparCacheTodosUsuarios(); // Atualiza o cache de usuarios
-        //limparTodoCacheUsuarios(); // Apaga todos os usuarios do cache
+        limparCacheTodosUsuarios();
     }
 
     @CacheEvict(value = "usuarios", key = "'todos'")

@@ -22,7 +22,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("apisecurity")
+                    .withIssuer("sensolux")
                     .withSubject(usuario.getUsername())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
@@ -35,7 +35,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
-                    .withIssuer("apisecurity")
+                    .withIssuer("sensolux")
                     .build()
                     .verify(token)
                     .getSubject();

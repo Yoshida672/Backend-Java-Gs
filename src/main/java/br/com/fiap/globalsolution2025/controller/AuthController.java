@@ -1,7 +1,8 @@
 package br.com.fiap.globalsolution2025.controller;
 
-import br.com.fiap.globalsolution2025.dto.AuthDTO;
-import br.com.fiap.globalsolution2025.dto.RegisterDTO;
+import br.com.fiap.globalsolution2025.dto.AuthRequest;
+import br.com.fiap.globalsolution2025.dto.LoginResponse;
+import br.com.fiap.globalsolution2025.dto.RegisterRequest;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import br.com.fiap.globalsolution2025.service.TokenService;
@@ -27,21 +28,19 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthDTO authDTO) {
-        // Gera um token do tipo UserPasswordAuthentication para esse usuário e senha
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid AuthRequest authDTO) {
         var userPwd = new UsernamePasswordAuthenticationToken(
                 authDTO.login(),
                 authDTO.senha()
         );
-        // Autentica o usuário
         var auth = this.authenticationManager.authenticate(userPwd);
-        // Gera um token JWT
         var token = tokenService.generateToken((Usuario) auth.getPrincipal());
-        return ResponseEntity.ok(token);
+        var response = new LoginResponse(authDTO.login(), token);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest registerDTO) {
         if (usuarioRepository.findByLogin(registerDTO.login()) != null) {
             return ResponseEntity.badRequest().build();
         }

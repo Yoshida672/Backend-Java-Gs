@@ -1,12 +1,12 @@
-package br.com.fiap.globalsolution2025.entity;
+package br.com.fiap.globalsolution2025.entity.enums;
 
-public enum UserRole {
+public enum USER_ROLE {
     ADMIN("admin"),
-    USER("user");
-
+    USER("user"),
+    GUEST("guest");
     private final String role;
 
-    UserRole(String role) {
+    USER_ROLE(String role) {
         this.role = role;
     }
 
