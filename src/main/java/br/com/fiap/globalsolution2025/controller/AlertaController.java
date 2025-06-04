@@ -58,4 +58,8 @@ public class AlertaController {
         Alerta alerta = service.update(id, request);
         return ResponseEntity.ok(mapper.toResponse(alerta, true));
     }
+    @DeleteMapping("/{id}")
+    public  void delete(@PathVariable UUID id) throws Exception{
+        service.delete(id);
+    }
 }

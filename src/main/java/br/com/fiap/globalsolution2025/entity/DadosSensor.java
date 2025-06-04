@@ -15,10 +15,14 @@ public class DadosSensor {
     private Double temperatura;
     @Column(name = "umidade")
     private Double umidade;
-    @Column(name = "indice_uv")
+    @Column(name = "radiacao")
     private Double indiceUv;
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
     public DadosSensor() {
     }
 
@@ -67,5 +71,16 @@ public class DadosSensor {
         this.dataHora = dataHora;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }
 

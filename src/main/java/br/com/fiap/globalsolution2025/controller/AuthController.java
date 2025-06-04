@@ -1,8 +1,8 @@
 package br.com.fiap.globalsolution2025.controller;
 
-import br.com.fiap.globalsolution2025.dto.AuthRequest;
-import br.com.fiap.globalsolution2025.dto.LoginResponse;
-import br.com.fiap.globalsolution2025.dto.RegisterRequest;
+import br.com.fiap.globalsolution2025.dto.AuthDTO;
+import br.com.fiap.globalsolution2025.dto.RegisterDTO;
+import br.com.fiap.globalsolution2025.entity.Email;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import br.com.fiap.globalsolution2025.service.TokenService;
@@ -28,29 +28,36 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid AuthRequest authDTO) {
+    public ResponseEntity login(@RequestBody @Valid AuthDTO authDTO) {
         var userPwd = new UsernamePasswordAuthenticationToken(
-                authDTO.login(),
+                authDTO.email(),
                 authDTO.senha()
         );
-        var auth = this.authenticationManager.authenticate(userPwd);
-        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
-        var response = new LoginResponse(authDTO.login(), token);
-        return ResponseEntity.ok(response);
-    }
 
+        var auth = this.authenticationManager.authenticate(userPwd);
+
+        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+
+        return ResponseEntity.ok(token);
+    }
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest registerDTO) {
-        if (usuarioRepository.findByLogin(registerDTO.login()) != null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
+        if (usuarioRepository.findByEmail_Email(registerDTO.email()).isPresent()) {
+            return ResponseEntity.badRequest().body("Email já cadastrado.");
         }
+
         String senhaCriptografada = new BCryptPasswordEncoder()
                 .encode(registerDTO.senha());
+
         Usuario novoUsuario = new Usuario(
-                registerDTO.login(),
+                registerDTO.nome(),
+                new Email(registerDTO.email(), true), // assume que email é ativo por padrão
                 senhaCriptografada,
-                registerDTO.role());
+                registerDTO.role()
+        );
+
         usuarioRepository.save(novoUsuario);
         return ResponseEntity.ok().build();
     }
+
 }

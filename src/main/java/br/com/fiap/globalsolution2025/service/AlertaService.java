@@ -45,4 +45,11 @@ public class AlertaService {
             return null;
         }
     }
+
+    public void delete(UUID id) {
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException("Alerta não encontrado: " + id);
+        }
+        repository.deleteById(id);
+    }
 }

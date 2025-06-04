@@ -2,9 +2,12 @@ package br.com.fiap.globalsolution2025.controller;
 
 import br.com.fiap.globalsolution2025.dto.DadosReponse;
 import br.com.fiap.globalsolution2025.dto.DadosRequest;
+import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.mapper.DadosMapper;
+import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import br.com.fiap.globalsolution2025.service.DadosSensorService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import br.com.fiap.globalsolution2025.entity.DadosSensor;
 
@@ -19,20 +22,25 @@ public class DadosController {
 
     private final DadosSensorService service;
     private final DadosMapper mapper;
+    private final UsuarioRepository usuarioRepository;
 
-    public DadosController(DadosSensorService service, DadosMapper mapper) {
+    public DadosController(DadosSensorService service, DadosMapper mapper, UsuarioRepository usuarioRepository) {
         this.service = service;
         this.mapper = mapper;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @PostMapping
     public ResponseEntity<DadosReponse> create(@RequestBody DadosRequest request) throws Exception {
-        System.out.println("Requisição recebida: " + request);
-        DadosSensor saved = service.saveData(request);
+        String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Usuario usuario = service.getUsuarioPorEmail(emailUsuario);
+
+        DadosSensor saved = service.saveDataComUsuario(request, usuario);
+
         DadosReponse response = mapper.toResponse(saved, true);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosReponse> getById(@PathVariable UUID id) throws Exception {
@@ -55,10 +63,5 @@ public class DadosController {
 
         return ResponseEntity.ok(list);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<DadosReponse> update(@PathVariable UUID id, @RequestBody DadosRequest request) throws Exception {
-        DadosSensor updated = service.update(id, request);
-        DadosReponse response = mapper.toResponse(updated, true);
-        return ResponseEntity.ok(response);
-    }
+
 }
