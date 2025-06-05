@@ -1,7 +1,10 @@
 package br.com.fiap.globalsolution2025.service;
 
 
+import br.com.fiap.globalsolution2025.dto.request.CadastroSensorRequest;
+import br.com.fiap.globalsolution2025.entity.Sensor;
 import br.com.fiap.globalsolution2025.entity.Usuario;
+import br.com.fiap.globalsolution2025.repository.SensorRepository;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,9 +20,11 @@ import java.util.UUID;
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final SensorRepository sensorRepository;
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, SensorRepository sensorRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.sensorRepository = sensorRepository;
     }
 
     // CRUD
@@ -50,6 +55,24 @@ public class UsuarioService {
         usuario.setId(id);
         return usuarioRepository.save(usuario);
     }
+
+    public Sensor cadastrarSensorParaUsuario(String emailUsuario, CadastroSensorRequest request) {
+        Usuario usuario = usuarioRepository.findByEmail_Email(emailUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (sensorRepository.findByDeviceToken(request.deviceToken()).isPresent()) {
+            throw new RuntimeException("Dispositivo com esse token já existe");
+        }
+
+        Sensor sensor = new Sensor();
+        sensor.setDeviceToken(request.deviceToken());
+        sensor.setNome(request.nomeSensor());
+        sensor.setUsuario(usuario);
+
+        return sensorRepository.save(sensor);
+    }
+
+
 
     @Transactional
     @CacheEvict(value = "usuarios", key = "#id")

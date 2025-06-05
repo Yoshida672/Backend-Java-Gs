@@ -30,7 +30,6 @@ public class Usuario implements UserDetails {
 
     private USER_ROLE role;
 
-    // Getters e Setters para `email`, `nome`, `senha`, `role`, `id`
     public Email getEmail() {
         return email;
     }

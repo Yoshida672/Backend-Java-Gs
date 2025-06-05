@@ -1,4 +1,4 @@
-package br.com.fiap.globalsolution2025.dto;
+package br.com.fiap.globalsolution2025.dto.response;
 
 import org.springframework.hateoas.Link;
 
@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record DadosReponse(
         UUID id,
+
         Double temperatura,
         Double umidade,
         Double indiceUv,

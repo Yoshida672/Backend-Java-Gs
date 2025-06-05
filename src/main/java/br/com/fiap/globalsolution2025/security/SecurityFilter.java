@@ -33,7 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         System.out.println("[DEBUG] URI: " + uri);
 
-        if (uri.equals("/auth/register") || uri.equals("/auth/login")) {
+        if (uri.equals("/auth/register") || uri.equals("/auth/login") || uri.equals("/dados/publico")) {
             System.out.println("[DEBUG] URI pública, seguindo sem autenticação");
             filterChain.doFilter(request, response);
             return;

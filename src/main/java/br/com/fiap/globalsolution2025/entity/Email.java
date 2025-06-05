@@ -2,11 +2,14 @@ package br.com.fiap.globalsolution2025.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ssx_emails")
-public class Email {
+public class Email implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

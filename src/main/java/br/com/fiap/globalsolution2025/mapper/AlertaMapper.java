@@ -1,9 +1,8 @@
 package br.com.fiap.globalsolution2025.mapper;
 
-import br.com.fiap.globalsolution2025.controller.AlertaController;
 import br.com.fiap.globalsolution2025.controller.DadosController;
-import br.com.fiap.globalsolution2025.dto.AlertaRequest;
-import br.com.fiap.globalsolution2025.dto.AlertaResponse;
+import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.response.AlertaResponse;
 import br.com.fiap.globalsolution2025.entity.Alerta;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
@@ -32,10 +31,10 @@ public class AlertaMapper {
         }
         return new AlertaResponse(
                 alerta.getId(),
-                alerta.getTipo(),
+                alerta.getTipo().name(),
                 alerta.getMensagem(),
                 alerta.getNivelRisco(),
-                alerta.getStatus(),
+                alerta.getStatus().name(),
                 link
         );
     }

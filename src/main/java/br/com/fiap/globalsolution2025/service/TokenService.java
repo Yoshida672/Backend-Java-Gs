@@ -40,15 +40,14 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            return null; // <- aqui
+            return null;
         }
     }
-
 
     private Instant genExpirationDate() {
         return LocalDateTime
                 .now()
-                .plusMinutes(2)
+                .plusMinutes(5)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 

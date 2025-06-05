@@ -1,15 +1,21 @@
 package br.com.fiap.globalsolution2025.service;
 
-import br.com.fiap.globalsolution2025.dto.DadosRequest;
+import br.com.fiap.globalsolution2025.dto.request.DadosPorSensorRequest;
+import br.com.fiap.globalsolution2025.dto.request.DadosRequest;
 import br.com.fiap.globalsolution2025.entity.DadosSensor;
+import br.com.fiap.globalsolution2025.entity.Sensor;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.mapper.DadosMapper;
 import br.com.fiap.globalsolution2025.repository.DadosSensorRepository;
+import br.com.fiap.globalsolution2025.repository.SensorRepository;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,15 +24,12 @@ public class DadosSensorService {
     private final DadosSensorRepository repository;
     private final DadosMapper mapper;
     private final UsuarioRepository usuarioRepository;
-    public DadosSensorService(DadosSensorRepository repository, DadosMapper mapper, UsuarioRepository usuarioRepository) {
+    private final SensorRepository sensorRepository;
+    public DadosSensorService(DadosSensorRepository repository, DadosMapper mapper, UsuarioRepository usuarioRepository, SensorRepository sensorRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.usuarioRepository = usuarioRepository;
-    }
-
-    public DadosSensor saveData(DadosRequest dto) {
-        DadosSensor data = mapper.toEntity(dto);
-        return repository.save(data);
+        this.sensorRepository = sensorRepository;
     }
 
     public DadosSensor getById(UUID id) {
@@ -35,7 +38,14 @@ public class DadosSensorService {
     }
 
     public List<DadosSensor> getAll() {
-        return repository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Usuario usuario = getUsuarioPorEmail(email);
+
+        List<DadosSensor> dados = repository.findByUsuario(usuario);
+
+        return dados;
     }
     public Usuario getUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmail_Email(email)
@@ -43,7 +53,27 @@ public class DadosSensorService {
     }
     public DadosSensor saveDataComUsuario(DadosRequest request, Usuario usuario) {
         DadosSensor dados = mapper.toEntity(request);
-        dados.setUsuario(usuario); // supondo que sua entidade DadosSensor tenha um atributo Usuario
+        dados.setUsuario(usuario);
         return repository.save(dados);
     }
+
+    public Usuario getUsuarioPorDeviceToken(String deviceToken) {
+        Optional<Sensor> sensorOptional = sensorRepository.findByDeviceToken(deviceToken);
+        return sensorOptional.get().getUsuario();
+    }
+
+    public DadosSensor saveDataComToken(DadosPorSensorRequest request) {
+        Usuario usuario = getUsuarioPorDeviceToken(request.deviceToken());
+        DadosSensor dados = mapper.toEntityPublic(request, usuario);
+        return repository.save(dados);
+    }
+
+
+
+
+
+
+
+
+
 }

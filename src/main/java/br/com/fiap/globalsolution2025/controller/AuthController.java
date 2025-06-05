@@ -1,7 +1,7 @@
 package br.com.fiap.globalsolution2025.controller;
 
-import br.com.fiap.globalsolution2025.dto.AuthDTO;
-import br.com.fiap.globalsolution2025.dto.RegisterDTO;
+import br.com.fiap.globalsolution2025.dto.request.AuthRequest;
+import br.com.fiap.globalsolution2025.dto.request.RegisterRequest;
 import br.com.fiap.globalsolution2025.entity.Email;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
@@ -28,7 +28,7 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthDTO authDTO) {
+    public ResponseEntity login(@RequestBody @Valid AuthRequest authDTO) {
         var userPwd = new UsernamePasswordAuthenticationToken(
                 authDTO.email(),
                 authDTO.senha()
@@ -41,7 +41,7 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
+    public ResponseEntity register(@RequestBody @Valid RegisterRequest registerDTO) {
         if (usuarioRepository.findByEmail_Email(registerDTO.email()).isPresent()) {
             return ResponseEntity.badRequest().body("Email já cadastrado.");
         }
@@ -51,7 +51,7 @@ public class AuthController {
 
         Usuario novoUsuario = new Usuario(
                 registerDTO.nome(),
-                new Email(registerDTO.email(), true), // assume que email é ativo por padrão
+                new Email(registerDTO.email(), true),
                 senhaCriptografada,
                 registerDTO.role()
         );
@@ -59,5 +59,6 @@ public class AuthController {
         usuarioRepository.save(novoUsuario);
         return ResponseEntity.ok().build();
     }
+
 
 }

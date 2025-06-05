@@ -32,20 +32,18 @@ public class Alerta {
     @JoinColumn(name = "id_leitura_sensor")
     private DadosSensor leituraSensor;
 
-    @Column(name = "data_hora")
-    private LocalDateTime dataHora;
+
 
     public Alerta() {
     }
 
-    public Alerta(UUID id, TIPO tipo, String mensagem, Integer nivelRisco, STATUS status, DadosSensor leituraSensor, LocalDateTime dataHora) {
+    public Alerta(UUID id, TIPO tipo, String mensagem, Integer nivelRisco, STATUS status, DadosSensor leituraSensor) {
         this.id = id;
         this.tipo = tipo;
         this.mensagem = mensagem;
         this.nivelRisco = nivelRisco;
         this.status = status;
         this.leituraSensor = leituraSensor;
-        this.dataHora = dataHora;
     }
 
     public UUID getId() {
@@ -96,11 +94,5 @@ public class Alerta {
         this.leituraSensor = leituraSensor;
     }
 
-    public LocalDateTime getDataHora() {
-        return dataHora;
-    }
 
-    public void setDataHora(LocalDateTime dataHora) {
-        this.dataHora = dataHora;
-    }
 }

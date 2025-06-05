@@ -1,11 +1,12 @@
 package br.com.fiap.globalsolution2025.controller;
 
 
-import br.com.fiap.globalsolution2025.dto.AlertaRequest;
-import br.com.fiap.globalsolution2025.dto.AlertaResponse;
+import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.response.AlertaResponse;
 import br.com.fiap.globalsolution2025.entity.Alerta;
 import br.com.fiap.globalsolution2025.mapper.AlertaMapper;
 import br.com.fiap.globalsolution2025.service.AlertaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class AlertaController {
     }
 
     @PostMapping
-    public ResponseEntity<AlertaResponse> create(@RequestBody AlertaRequest request) throws Exception {
+    public ResponseEntity<AlertaResponse> create(@RequestBody @Valid AlertaRequest request) throws Exception {
         Alerta alerta = service.save(request);
         AlertaResponse response =mapper.toResponse(alerta, true);
         return ResponseEntity.ok(response);
@@ -54,7 +55,7 @@ public class AlertaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AlertaResponse> update(@PathVariable UUID id, @RequestBody AlertaRequest request) throws Exception {
+    public ResponseEntity<AlertaResponse> update(@PathVariable UUID id, @RequestBody @Valid AlertaRequest request) throws Exception {
         Alerta alerta = service.update(id, request);
         return ResponseEntity.ok(mapper.toResponse(alerta, true));
     }

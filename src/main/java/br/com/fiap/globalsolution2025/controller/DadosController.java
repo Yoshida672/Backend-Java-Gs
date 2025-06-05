@@ -1,11 +1,14 @@
 package br.com.fiap.globalsolution2025.controller;
 
-import br.com.fiap.globalsolution2025.dto.DadosReponse;
-import br.com.fiap.globalsolution2025.dto.DadosRequest;
+import br.com.fiap.globalsolution2025.dto.request.DadosPorSensorRequest;
+import br.com.fiap.globalsolution2025.dto.response.DadosReponse;
+import br.com.fiap.globalsolution2025.dto.request.DadosRequest;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.mapper.DadosMapper;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import br.com.fiap.globalsolution2025.service.DadosSensorService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +34,7 @@ public class DadosController {
     }
 
     @PostMapping
-    public ResponseEntity<DadosReponse> create(@RequestBody DadosRequest request) throws Exception {
+    public ResponseEntity<DadosReponse> create(@RequestBody @Valid DadosRequest request) throws Exception {
         String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Usuario usuario = service.getUsuarioPorEmail(emailUsuario);
@@ -63,5 +66,16 @@ public class DadosController {
 
         return ResponseEntity.ok(list);
     }
+
+    @PostMapping("/publico")
+    public ResponseEntity<Void> createBySensor(@RequestBody @Valid DadosPorSensorRequest request) {
+        try {
+            service.saveDataComToken(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 
 }

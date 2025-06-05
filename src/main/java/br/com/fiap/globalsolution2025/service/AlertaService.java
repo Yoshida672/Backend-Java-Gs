@@ -1,8 +1,7 @@
 package br.com.fiap.globalsolution2025.service;
 
-import br.com.fiap.globalsolution2025.dto.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
 import br.com.fiap.globalsolution2025.entity.Alerta;
-import br.com.fiap.globalsolution2025.entity.DadosSensor;
 import br.com.fiap.globalsolution2025.mapper.AlertaMapper;
 import br.com.fiap.globalsolution2025.repository.AlertaRepository;
 import jakarta.persistence.EntityNotFoundException;

@@ -1,6 +1,7 @@
 package br.com.fiap.globalsolution2025.repository;
 
 import br.com.fiap.globalsolution2025.entity.DadosSensor;
+import br.com.fiap.globalsolution2025.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +19,7 @@ public interface DadosSensorRepository  extends JpaRepository<DadosSensor, UUID>
         Double mediaTemperatura(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
 
         @Query("SELECT AVG(d.umidade) FROM DadosSensor d WHERE d.dataHora BETWEEN :inicio AND :fim")
-        Double mediaUmidade(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);}
+        Double mediaUmidade(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
+
+        List<DadosSensor> findByUsuario(Usuario usuario);
+}
