@@ -40,9 +40,10 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            return "";
+            return null; // <- aqui
         }
     }
+
 
     private Instant genExpirationDate() {
         return LocalDateTime

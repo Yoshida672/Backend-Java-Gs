@@ -30,19 +30,41 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        String uri = request.getRequestURI();
+        System.out.println("[DEBUG] URI: " + uri);
+
+        if (uri.equals("/auth/register") || uri.equals("/auth/login")) {
+            System.out.println("[DEBUG] URI pública, seguindo sem autenticação");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = recoverToken(request);
+        System.out.println("[DEBUG] Token recebido: " + token);
 
         if (token != null) {
             String emailEndereco = tokenService.validateToken(token);
-            var optionalUsuario = usuarioRepository.findByEmail_Email(emailEndereco);
+            System.out.println("[DEBUG] Email extraído do token: " + emailEndereco);
 
-            if (optionalUsuario.isPresent()) {
-                UserDetails userDetails = optionalUsuario.get();
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+            if (emailEndereco != null) {
+                var optionalUsuario = usuarioRepository.findByEmail_Email(emailEndereco);
+                System.out.println("[DEBUG] Usuário encontrado? " + optionalUsuario.isPresent());
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (optionalUsuario.isPresent()) {
+                    UserDetails userDetails = optionalUsuario.get();
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println("[DEBUG] Autenticação adicionada no SecurityContext");
+                } else {
+                    System.out.println("[DEBUG] Nenhum usuário encontrado com o email: " + emailEndereco);
+                }
+            } else {
+                System.out.println("[DEBUG] Email no token é nulo (token inválido?)");
             }
+        } else {
+            System.out.println("[DEBUG] Token ausente ou inválido no header");
         }
 
         filterChain.doFilter(request, response);

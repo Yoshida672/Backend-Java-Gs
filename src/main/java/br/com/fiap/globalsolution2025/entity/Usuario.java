@@ -17,7 +17,7 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ssx_usuarios_email",
             joinColumns = @JoinColumn(name = "id_usuario"),
@@ -74,7 +74,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nome;
+        return email.getEmail();
     }
 
     @Override
@@ -96,7 +96,9 @@ public class Usuario implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 
-    public Usuario() {}
+    public Usuario() {
+        this.email = new Email();
+    }
 
     public Usuario(String nome, Email email, String senha, USER_ROLE role) {
         this.nome = nome;
