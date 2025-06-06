@@ -46,7 +46,7 @@ public class DadosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DadosReponse> getById(@PathVariable UUID id) throws Exception {
+    public ResponseEntity<DadosReponse> getById(@PathVariable Long id) throws Exception {
         DadosSensor entity = service.getById(id);
         DadosReponse response = mapper.toResponse(entity, false);
         return ResponseEntity.ok(response);

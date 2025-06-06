@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record DadosReponse(
-        UUID id,
+        Long id,
 
         Double temperatura,
         Double umidade,

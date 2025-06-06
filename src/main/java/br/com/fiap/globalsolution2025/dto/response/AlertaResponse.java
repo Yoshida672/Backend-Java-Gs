@@ -6,7 +6,7 @@ import org.springframework.hateoas.Link;
 import java.util.UUID;
 
 public record AlertaResponse(
-        UUID id,
+        Long id,
         String tipo,
         String mensagem,
         Integer nivelRisco,

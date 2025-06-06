@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sslx_alertas")
+@Table(name = "ssx_alertas")
 public class Alerta {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_alerta")
-    private UUID id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_alerta")
@@ -29,7 +29,7 @@ public class Alerta {
     private STATUS status;
 
     @ManyToOne
-    @JoinColumn(name = "id_leitura_sensor")
+    @JoinColumn(name = "ssx_ltrs_id_leitura_sensor")
     private DadosSensor leituraSensor;
 
 
@@ -37,7 +37,7 @@ public class Alerta {
     public Alerta() {
     }
 
-    public Alerta(UUID id, TIPO tipo, String mensagem, Integer nivelRisco, STATUS status, DadosSensor leituraSensor) {
+    public Alerta(Long id, TIPO tipo, String mensagem, Integer nivelRisco, STATUS status, DadosSensor leituraSensor) {
         this.id = id;
         this.tipo = tipo;
         this.mensagem = mensagem;
@@ -46,8 +46,12 @@ public class Alerta {
         this.leituraSensor = leituraSensor;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public TIPO getTipo() {
@@ -80,10 +84,6 @@ public class Alerta {
 
     public void setStatus(STATUS status) {
         this.status = status;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public DadosSensor getLeituraSensor() {

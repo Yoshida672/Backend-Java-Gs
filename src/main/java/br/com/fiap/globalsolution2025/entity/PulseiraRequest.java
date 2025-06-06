@@ -2,36 +2,26 @@ package br.com.fiap.globalsolution2025.entity;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Entity
-@Embeddable
-public class Sensor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+@Table(name = "ssx_pulseira_request")
 
-    private String nome;
+public class PulseiraRequest {
+    @Id
+    @Column(name = "id_pulseira_request")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String deviceToken;
 
     @ManyToOne
-    @JoinColumn(name = "usuario")
+    @JoinColumn(name = "ssx_usuarios_id_usuario")
     private Usuario usuario;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getDeviceToken() {
@@ -50,12 +40,11 @@ public class Sensor {
         this.usuario = usuario;
     }
 
-    public Sensor() {
+    public PulseiraRequest() {
     }
 
-    public Sensor(UUID id, String nome, String deviceToken, Usuario usuario) {
+    public PulseiraRequest(Long id, String deviceToken, Usuario usuario) {
         this.id = id;
-        this.nome = nome;
         this.deviceToken = deviceToken;
         this.usuario = usuario;
     }

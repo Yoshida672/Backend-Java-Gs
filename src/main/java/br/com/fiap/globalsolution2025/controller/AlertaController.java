@@ -34,7 +34,7 @@ public class AlertaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AlertaResponse> getById(@PathVariable UUID id) throws Exception {
+    public ResponseEntity<AlertaResponse> getById(@PathVariable Long id) throws Exception {
         Alerta alerta = service.getById(id);
         return ResponseEntity.ok(mapper.toResponse(alerta, false));
     }
@@ -55,12 +55,12 @@ public class AlertaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AlertaResponse> update(@PathVariable UUID id, @RequestBody @Valid AlertaRequest request) throws Exception {
+    public ResponseEntity<AlertaResponse> update(@PathVariable Long id, @RequestBody @Valid AlertaRequest request) throws Exception {
         Alerta alerta = service.update(id, request);
         return ResponseEntity.ok(mapper.toResponse(alerta, true));
     }
     @DeleteMapping("/{id}")
-    public  void delete(@PathVariable UUID id) throws Exception{
+    public  void delete(@PathVariable Long id) throws Exception{
         service.delete(id);
     }
 }

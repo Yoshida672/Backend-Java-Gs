@@ -56,6 +56,8 @@ public class AuthController {
                 registerDTO.role()
         );
 
+        System.out.println("Role recebido: " + registerDTO.role());
+
         usuarioRepository.save(novoUsuario);
         return ResponseEntity.ok().build();
     }

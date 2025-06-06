@@ -14,20 +14,19 @@ import java.util.UUID;
 @Table(name="ssx_usuarios")
 public class Usuario implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(name = "id_usuario")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "ssx_usuarios_email",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_email")
-    )
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ssx_emails_id_email")
     private Email email;
+
     private String nome;
 
     private String senha;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private USER_ROLE role;
 
     public Email getEmail() {
@@ -62,14 +61,13 @@ public class Usuario implements UserDetails {
         this.role = role;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
-
 
     @Override
     public String getUsername() {

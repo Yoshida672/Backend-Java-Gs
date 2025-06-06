@@ -26,7 +26,7 @@ public class AlertaService {
         return repository.save(alerta);
     }
 
-    public Alerta getById(UUID id) {
+    public Alerta getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Alerta não encontrado: " + id));
     }
@@ -35,7 +35,7 @@ public class AlertaService {
         return repository.findAll();
     }
 
-    public Alerta update(UUID id, AlertaRequest request) {
+    public Alerta update(Long id, AlertaRequest request) {
         if(repository.findById(id).isPresent()){
             Alerta alerta = mapper.toEntity(request);
             return repository.save(alerta);
@@ -45,7 +45,7 @@ public class AlertaService {
         }
     }
 
-    public void delete(UUID id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Alerta não encontrado: " + id);
         }

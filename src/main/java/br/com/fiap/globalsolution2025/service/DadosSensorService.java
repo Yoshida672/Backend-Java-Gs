@@ -3,7 +3,7 @@ package br.com.fiap.globalsolution2025.service;
 import br.com.fiap.globalsolution2025.dto.request.DadosPorSensorRequest;
 import br.com.fiap.globalsolution2025.dto.request.DadosRequest;
 import br.com.fiap.globalsolution2025.entity.DadosSensor;
-import br.com.fiap.globalsolution2025.entity.Sensor;
+import br.com.fiap.globalsolution2025.entity.PulseiraRequest;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.mapper.DadosMapper;
 import br.com.fiap.globalsolution2025.repository.DadosSensorRepository;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class DadosSensorService {
@@ -32,7 +31,7 @@ public class DadosSensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public DadosSensor getById(UUID id) {
+    public DadosSensor getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Dados não encontrados para o ID: " + id));
     }
@@ -40,7 +39,6 @@ public class DadosSensorService {
     public List<DadosSensor> getAll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-
         Usuario usuario = getUsuarioPorEmail(email);
 
         List<DadosSensor> dados = repository.findByUsuario(usuario);
@@ -58,7 +56,7 @@ public class DadosSensorService {
     }
 
     public Usuario getUsuarioPorDeviceToken(String deviceToken) {
-        Optional<Sensor> sensorOptional = sensorRepository.findByDeviceToken(deviceToken);
+        Optional<PulseiraRequest> sensorOptional = sensorRepository.findByDeviceToken(deviceToken);
         return sensorOptional.get().getUsuario();
     }
 

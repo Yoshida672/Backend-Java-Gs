@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public interface DadosSensorRepository  extends JpaRepository<DadosSensor, UUID> {
+public interface DadosSensorRepository  extends JpaRepository<DadosSensor, Long> {
         List<DadosSensor> findByDataHoraBetween(LocalDateTime inicio, LocalDateTime fim);
 
         List<DadosSensor> findTop10ByOrderByDataHoraDesc();

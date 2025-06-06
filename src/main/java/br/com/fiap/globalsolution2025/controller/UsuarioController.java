@@ -1,7 +1,7 @@
 package br.com.fiap.globalsolution2025.controller;
 
 import br.com.fiap.globalsolution2025.dto.request.CadastroSensorRequest;
-import br.com.fiap.globalsolution2025.entity.Sensor;
+import br.com.fiap.globalsolution2025.entity.PulseiraRequest;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import br.com.fiap.globalsolution2025.service.UsuarioService;
@@ -36,9 +36,9 @@ public class UsuarioController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         String email = userDetails.getUsername();
-        Sensor sensor = usuarioService.cadastrarSensorParaUsuario(email, request);
+        PulseiraRequest sensor = usuarioService.cadastrarSensorParaUsuario(email, request);
 
-        return ResponseEntity.ok("Sensor cadastrado com sucesso com ID: " + sensor.getId());
+        return ResponseEntity.ok("Sensor cadastrado com sucesso com o Id: "+sensor.getId());
     }
 
 }

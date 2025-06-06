@@ -2,7 +2,7 @@ package br.com.fiap.globalsolution2025.service;
 
 
 import br.com.fiap.globalsolution2025.dto.request.CadastroSensorRequest;
-import br.com.fiap.globalsolution2025.entity.Sensor;
+import br.com.fiap.globalsolution2025.entity.PulseiraRequest;
 import br.com.fiap.globalsolution2025.entity.Usuario;
 import br.com.fiap.globalsolution2025.repository.SensorRepository;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -36,7 +35,7 @@ public class UsuarioService {
     }
 
     @Cacheable(value = "usuarios", key = "#id")
-    public Usuario readUsuarioById(UUID id) {
+    public Usuario readUsuarioById(Long id) {
         return usuarioRepository.findById(id).orElse(null);
     }
 
@@ -47,7 +46,7 @@ public class UsuarioService {
 
     @Transactional
     @CachePut(value = "usuarios", key = "#result.id")
-    public Usuario updateUsuario(UUID id, Usuario usuario) {
+    public Usuario updateUsuario(Long id, Usuario usuario) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if (usuarioOptional.isEmpty()) {
             return null;
@@ -56,7 +55,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Sensor cadastrarSensorParaUsuario(String emailUsuario, CadastroSensorRequest request) {
+    public PulseiraRequest cadastrarSensorParaUsuario(String emailUsuario, CadastroSensorRequest request) {
         Usuario usuario = usuarioRepository.findByEmail_Email(emailUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
@@ -64,9 +63,8 @@ public class UsuarioService {
             throw new RuntimeException("Dispositivo com esse token já existe");
         }
 
-        Sensor sensor = new Sensor();
+        PulseiraRequest sensor = new PulseiraRequest();
         sensor.setDeviceToken(request.deviceToken());
-        sensor.setNome(request.nomeSensor());
         sensor.setUsuario(usuario);
 
         return sensorRepository.save(sensor);
@@ -76,7 +74,7 @@ public class UsuarioService {
 
     @Transactional
     @CacheEvict(value = "usuarios", key = "#id")
-    public void deleteUsuario(UUID id) {
+    public void deleteUsuario(Long id) {
         usuarioRepository.deleteById(id);
         limparCacheTodosUsuarios(); // Atualiza o cache de usuarios
         //limparTodoCacheUsuarios(); // Apaga todos os usuarios do cache

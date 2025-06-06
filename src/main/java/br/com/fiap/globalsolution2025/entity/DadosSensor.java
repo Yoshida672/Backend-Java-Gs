@@ -9,8 +9,9 @@ import java.util.UUID;
 @Table(name = "ssx_leituras_sensores")
 public class DadosSensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Column(name = "id_leitura_sensor")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "temperatura")
     private Double temperatura;
     @Column(name = "umidade")
@@ -20,13 +21,13 @@ public class DadosSensor {
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "ssx_usuarios_id_usuario")
     private Usuario usuario;
 
     public DadosSensor() {
     }
 
-    public DadosSensor(UUID id, Double temperatura, Double umidade, Double indiceUv, LocalDateTime dataHora) {
+    public DadosSensor(Long id, Double temperatura, Double umidade, Double indiceUv, LocalDateTime dataHora) {
         this.id = id;
         this.temperatura = temperatura;
         this.umidade = umidade;
@@ -34,10 +35,13 @@ public class DadosSensor {
         this.dataHora = dataHora;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Double getTemperatura() {
         return temperatura;
@@ -69,10 +73,6 @@ public class DadosSensor {
 
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public Usuario getUsuario() {
