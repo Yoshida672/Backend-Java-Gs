@@ -1,8 +1,9 @@
 package br.com.fiap.globalsolution2025.entity.enums;
 
 public enum STATUS {
-    CONCLUIDO("concluido"),
-    ABERTO("aberto");
+     RESOLVIDO("resolvido"),
+    ATIVO("ativo"),
+    IGNORADO("ignorado");
     private final String status;
 
     STATUS(String status) {

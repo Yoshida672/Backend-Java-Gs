@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @RestController
 @RequestMapping("/dados")
 public class DadosController {
@@ -34,48 +33,62 @@ public class DadosController {
     }
 
     @PostMapping
-    public ResponseEntity<DadosReponse> create(@RequestBody @Valid DadosRequest request) throws Exception {
-        String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        Usuario usuario = service.getUsuarioPorEmail(emailUsuario);
-
-        DadosSensor saved = service.saveDataComUsuario(request, usuario);
-
-        DadosReponse response = mapper.toResponse(saved, true);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<DadosReponse> getById(@PathVariable Long id) throws Exception {
-        DadosSensor entity = service.getById(id);
-        DadosReponse response = mapper.toResponse(entity, false);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<DadosReponse>> getAll() {
-        List<DadosReponse> list = service.getAll().stream()
-                .map(d -> {
-                    try {
-                        return mapper.toResponse(d, true);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(list);
-    }
-
-    @PostMapping("/publico")
-    public ResponseEntity<Void> createBySensor(@RequestBody @Valid DadosPorSensorRequest request) {
+    public ResponseEntity<?> create(@RequestBody @Valid DadosRequest request) {
         try {
-            service.saveDataComToken(request);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
+
+            Usuario usuario = service.getUsuarioPorEmail(emailUsuario);
+            DadosSensor saved = service.saveDataComUsuario(request, usuario);
+            DadosReponse response = mapper.toResponse(saved, true);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao salvar dados: " + e.getMessage());
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            DadosSensor entity = service.getById(id);
+            DadosReponse response = mapper.toResponse(entity, false);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Dado com ID " + id + " não encontrado.");
+        }
+    }
 
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        try {
+            List<DadosReponse> list = service.getAll().stream()
+                    .map(d -> {
+                        try {
+                            return mapper.toResponse(d, true);
+                        } catch (Exception e) {
+                            throw new RuntimeException("Erro ao converter dados: " + e.getMessage());
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao buscar dados: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/publico")
+    public ResponseEntity<?> createBySensor(@RequestBody @Valid DadosPorSensorRequest request) {
+        try {
+            service.saveDataComToken(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Dados enviados com sucesso.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao processar dados do sensor: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado: " + e.getMessage());
+        }
+    }
 }

@@ -28,11 +28,23 @@ public class SecurityConfigurations {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/recover-password").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/reset-password").permitAll()
                         .requestMatchers("/dados/publico").permitAll()
-                        .requestMatchers("/**").hasRole("ADMIN")
+
+                        .requestMatchers("/dados/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/usuario/**").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/alertas/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/alertas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/alertas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/alertas/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/dashboard/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
