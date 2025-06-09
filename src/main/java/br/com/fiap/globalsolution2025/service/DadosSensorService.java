@@ -10,6 +10,8 @@ import br.com.fiap.globalsolution2025.repository.DadosSensorRepository;
 import br.com.fiap.globalsolution2025.repository.SensorRepository;
 import br.com.fiap.globalsolution2025.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,11 +33,13 @@ public class DadosSensorService {
         this.sensorRepository = sensorRepository;
     }
 
+    @Cacheable(value = "dadosSensor", key = "#id")
     public DadosSensor getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Dados não encontrados para o ID: " + id));
     }
 
+    @Cacheable(value = "dadosSensorUsuario", key = "#email")
     public List<DadosSensor> getAll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -45,26 +49,29 @@ public class DadosSensorService {
 
         return dados;
     }
+
     public Usuario getUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmail_Email(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+    @CachePut(value = "dadosSensor", key = "#result.id")
     public DadosSensor saveDataComUsuario(DadosRequest request, Usuario usuario) {
         DadosSensor dados = mapper.toEntity(request);
         dados.setUsuario(usuario);
         return repository.save(dados);
     }
 
-    public Usuario getUsuarioPorDeviceToken(String deviceToken) {
-        Optional<PulseiraRequest> sensorOptional = sensorRepository.findByDeviceToken(deviceToken);
-        return sensorOptional.get().getUsuario();
-    }
-
+    @CachePut(value = "dadosSensor", key = "#result.id")
     public DadosSensor saveDataComToken(DadosPorSensorRequest request) {
         Usuario usuario = getUsuarioPorDeviceToken(request.deviceToken());
         DadosSensor dados = mapper.toEntityPublic(request, usuario);
         return repository.save(dados);
     }
+    public Usuario getUsuarioPorDeviceToken(String deviceToken) {
+        Optional<PulseiraRequest> sensorOptional = sensorRepository.findByDeviceToken(deviceToken);
+        return sensorOptional.get().getUsuario();
+    }
+
 
 
 

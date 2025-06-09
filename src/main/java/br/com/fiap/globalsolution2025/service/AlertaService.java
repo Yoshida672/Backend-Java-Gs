@@ -13,6 +13,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.util.ClassUtils.isPresent;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 
 @Service
 public class AlertaService {
@@ -25,26 +28,32 @@ public class AlertaService {
         this.mapper = mapper;
     }
 
+    @CachePut(value = "alertas", key = "#result.id")
     public Alerta save(AlertaRequest request) {
-        Alerta alerta = mapper.toEntity(request,new Alerta());
+        Alerta alerta = mapper.toEntity(request, new Alerta());
         return repository.save(alerta);
     }
 
+    @Cacheable(value = "alertas", key = "#id")
     public Alerta getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Alerta não encontrado: " + id));
     }
 
+    @Cacheable(value = "alertasTodos")
     public List<Alerta> getAll() {
         return repository.findAll();
     }
 
-    public Alerta update(Long id, UpdateAlertaRequest request) throws Exception  {
-        Alerta alerta = repository.findById(id).orElseThrow(()-> new Exception("Filial não encontrada"));
-        mapper.toEntity(request,alerta);
+    @CachePut(value = "alertas", key = "#id")
+    public Alerta update(Long id, UpdateAlertaRequest request) throws Exception {
+        Alerta alerta = repository.findById(id)
+                .orElseThrow(() -> new Exception("Alerta não encontrado"));
+        mapper.toEntity(request, alerta);
         return repository.save(alerta);
     }
 
+    @CacheEvict(value = {"alertas", "alertasTodos"}, key = "#id")
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Alerta não encontrado: " + id);

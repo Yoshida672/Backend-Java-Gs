@@ -22,10 +22,18 @@ public class AlertaMapper {
         return alerta;
     }
     public Alerta toEntity(UpdateAlertaRequest request, Alerta alerta) {
-        alerta.setTipo(request.tipo());
-        alerta.setMensagem(request.mensagem());
-        alerta.setNivelRisco(request.nivelRisco());
-        alerta.setStatus(request.status());
+        if (request.tipo() != null) {
+            alerta.setTipo(request.tipo());
+        }
+        if (request.mensagem() != null) {
+            alerta.setMensagem(request.mensagem());
+        }
+        if (request.nivelRisco() != null) {
+            alerta.setNivelRisco(request.nivelRisco());
+        }
+        if (request.status() != null) {
+            alerta.setStatus(request.status());
+        }
         return alerta;
     }
 
