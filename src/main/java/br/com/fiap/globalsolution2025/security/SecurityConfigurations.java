@@ -36,6 +36,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/reset-password").permitAll()
                         .requestMatchers("/dados/publico").permitAll()
 
+                        .requestMatchers("/error").permitAll()
+
                         .requestMatchers("/dados/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/usuario/**").hasAnyRole("USER", "ADMIN")
 

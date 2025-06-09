@@ -1,6 +1,7 @@
 package br.com.fiap.globalsolution2025.service;
 
 import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.request.UpdateAlertaRequest;
 import br.com.fiap.globalsolution2025.entity.Alerta;
 import br.com.fiap.globalsolution2025.mapper.AlertaMapper;
 import br.com.fiap.globalsolution2025.repository.AlertaRepository;
@@ -8,7 +9,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.util.ClassUtils.isPresent;
 
 @Service
 public class AlertaService {
@@ -22,7 +26,7 @@ public class AlertaService {
     }
 
     public Alerta save(AlertaRequest request) {
-        Alerta alerta = mapper.toEntity(request);
+        Alerta alerta = mapper.toEntity(request,new Alerta());
         return repository.save(alerta);
     }
 
@@ -35,14 +39,10 @@ public class AlertaService {
         return repository.findAll();
     }
 
-    public Alerta update(Long id, AlertaRequest request) {
-        if(repository.findById(id).isPresent()){
-            Alerta alerta = mapper.toEntity(request);
-            return repository.save(alerta);
-        }
-        else{
-            return null;
-        }
+    public Alerta update(Long id, UpdateAlertaRequest request) throws Exception  {
+        Alerta alerta = repository.findById(id).orElseThrow(()-> new Exception("Filial não encontrada"));
+        mapper.toEntity(request,alerta);
+        return repository.save(alerta);
     }
 
     public void delete(Long id) {

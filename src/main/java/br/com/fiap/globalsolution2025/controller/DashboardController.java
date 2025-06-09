@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/dashboard")
 public class DashboardController {
@@ -32,22 +35,36 @@ public class DashboardController {
     @GetMapping("/average-temperature-today")
     public ResponseEntity<?> getAverageTemperatureToday() {
         try {
-            Double avgTemp = service.getAverageTemperatureToday();
-            return ResponseEntity.ok(avgTemp);
+            Optional<Double> avgTemp = service.getAverageTemperatureToday();
+            if (avgTemp.isPresent()) {
+
+                return ResponseEntity.ok(avgTemp.get());
+            }else{
+                return ResponseEntity.ok(
+                        Map.of("mensagem", "Nenhuma leitura registrada hoje")
+                );
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to calculate average temperature.");
+            return ResponseEntity.status(500).body("Erro ao calcular a temperatura média.");
         }
     }
 
     @GetMapping("/average-humidity-today")
     public ResponseEntity<?> getAverageHumidityToday() {
         try {
-            Double avgHumidity = service.getAverageHumidityToday();
-            return ResponseEntity.ok(avgHumidity);
+            Optional<Double> avgHumidity = service.getAverageHumidityToday();
+            if (avgHumidity.isPresent()) {
+                return ResponseEntity.ok(avgHumidity.get());
+            } else {
+                return ResponseEntity.ok(
+                        Map.of("mensagem", "Nenhuma leitura registrada hoje")
+                );
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to calculate average humidity.");
+            return ResponseEntity.status(500).body("Erro ao calcular a umidade média.");
         }
     }
+
     @PostMapping("/between")
     public ResponseEntity<?> getReadingsBetween(@RequestBody BetweenRequest intervalo) {
         try {

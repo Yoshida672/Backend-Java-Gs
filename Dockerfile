@@ -6,4 +6,4 @@ RUN gradle build
 FROM openjdk:21-jdk-slim
 COPY --from=BUILD /usr/app .
 EXPOSE 8080
-ENTRYPOINT exec java -jar build/libs/api-security-1.0.0.jar
+ENTRYPOINT exec java -jar build/libs/Sensolux-1.0.0.jar

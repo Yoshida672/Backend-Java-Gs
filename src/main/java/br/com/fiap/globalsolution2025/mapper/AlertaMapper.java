@@ -2,6 +2,7 @@ package br.com.fiap.globalsolution2025.mapper;
 
 import br.com.fiap.globalsolution2025.controller.DadosController;
 import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.request.UpdateAlertaRequest;
 import br.com.fiap.globalsolution2025.dto.response.AlertaResponse;
 import br.com.fiap.globalsolution2025.entity.Alerta;
 import org.springframework.hateoas.Link;
@@ -13,8 +14,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class AlertaMapper {
 
-    public Alerta toEntity(AlertaRequest request) {
-        Alerta alerta = new Alerta();
+    public Alerta toEntity(AlertaRequest request,Alerta alerta) {
+        alerta.setTipo(request.tipo());
+        alerta.setMensagem(request.mensagem());
+        alerta.setNivelRisco(request.nivelRisco());
+        alerta.setStatus(request.status());
+        return alerta;
+    }
+    public Alerta toEntity(UpdateAlertaRequest request, Alerta alerta) {
         alerta.setTipo(request.tipo());
         alerta.setMensagem(request.mensagem());
         alerta.setNivelRisco(request.nivelRisco());

@@ -1,6 +1,7 @@
 package br.com.fiap.globalsolution2025.controller;
 
 import br.com.fiap.globalsolution2025.dto.request.AlertaRequest;
+import br.com.fiap.globalsolution2025.dto.request.UpdateAlertaRequest;
 import br.com.fiap.globalsolution2025.dto.response.AlertaResponse;
 import br.com.fiap.globalsolution2025.entity.Alerta;
 import br.com.fiap.globalsolution2025.mapper.AlertaMapper;
@@ -74,7 +75,7 @@ public class AlertaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid AlertaRequest request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UpdateAlertaRequest request) {
         try {
             Alerta alerta = service.update(id, request);
             if (alerta == null) {

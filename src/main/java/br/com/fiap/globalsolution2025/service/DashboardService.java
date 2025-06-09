@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class DashboardService {
 
@@ -20,16 +22,22 @@ public class DashboardService {
         return repository.findTop10ByOrderByDataHoraDesc();
     }
 
-    public Double getAverageTemperatureToday() {
-        LocalDateTime start = LocalDate.now().atStartOfDay();
-        LocalDateTime end = start.plusDays(1).minusSeconds(1);
-        return repository.mediaTemperatura(start, end);
+    public Optional<Double> getAverageTemperatureToday() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+        Double average = repository.mediaTemperatura(start, end);
+        return Optional.ofNullable(average);
     }
 
-    public Double getAverageHumidityToday() {
-        LocalDateTime start = LocalDate.now().atStartOfDay();
-        LocalDateTime end = start.plusDays(1).minusSeconds(1);
-        return repository.mediaUmidade(start, end);
+
+    public Optional<Double> getAverageHumidityToday() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+        Double average = repository.mediaUmidade(start, end);
+        return Optional.ofNullable(average);
     }
 
     public List<DadosSensor> getReadingsBetween(LocalDateTime start, LocalDateTime end) {
